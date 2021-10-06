@@ -1,0 +1,251 @@
+*, *:hover, *:focus, *:focus-visible {
+  margin: 0;
+  padding: 0;
+  -webkit-margin-after: 0;
+  margin-block-end: 0;
+  -webkit-margin-before: 0;
+  margin-block-start: 0;
+  text-decoration: none;
+  font-family: sans-serif;
+  border: none;
+  outline: none;
+}
+
+body {
+  padding: 40px;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+header img {
+  width: 50px;
+}
+header h1 {
+  padding-top: 10px;
+  color: #d04f4f;
+}
+
+main, #haut {
+  padding: 35px;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-row-gap: 50px;
+  grid-column-gap: 50px;
+  row-gap: 50px;
+  column-gap: 50px;
+}
+main .blocrecette {
+  border-radius: 8px;
+  overflow: hidden;
+}
+main .blocrecette .imagegrise {
+  background-color: #C7BEBE;
+  width: 100%;
+  height: 220px;
+}
+main .blocrecette .recettedescription {
+  background-color: #e7e7e7;
+  padding: 20px;
+  height: 100%;
+}
+main .blocrecette .presentation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+main .blocrecette .divtemps {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: max-content;
+  padding-left: 15px;
+}
+main .blocrecette .horloge {
+  width: 23px;
+  padding-right: 8px;
+}
+main .blocrecette h2 {
+  font-weight: 100;
+  font-size: larger;
+}
+main .blocrecette .temps {
+  font-weight: bold;
+  font-size: large;
+}
+
+.blocdescription {
+  display: flex;
+  padding-top: 25px;
+  font-size: small;
+}
+.blocdescription .description {
+  width: 50%;
+  padding-left: 20px;
+  max-height: 90px;
+  line-height: 15px;
+  -webkit-line-clamp: 6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blocingredients {
+  width: 50%;
+  overflow: hidden;
+}
+
+.ingredient {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.ingredientinfo {
+  padding-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.texteingredient {
+  display: flex;
+  flex-direction: row;
+}
+
+#formsearchprincipal {
+  position: relative;
+}
+#formsearchprincipal .fa-search {
+  position: absolute;
+  right: 10px;
+  font-size: x-large;
+  top: calc(50% - 32px);
+  padding: 20px;
+  background-color: #e7e7e7;
+}
+#formsearchprincipal #barrederecherche {
+  width: 100%;
+  background-color: #e7e7e7;
+  padding: 25px;
+  border-radius: 8px;
+  font-size: large;
+}
+
+#navtrie {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+  height: 75px;
+}
+#navtrie .possibilitedetrie {
+  height: fit-content;
+  display: flex;
+  padding: 25px;
+  border-radius: 8px;
+  color: white;
+  font-size: larger;
+}
+#navtrie .possibilitedetrie .fa-chevron-down {
+  padding-left: 30px;
+}
+#navtrie #spaningredients, #navtrie #ingredients, #navtrie #ingredients input {
+  background-color: #3282F7;
+  margin-right: 20px;
+}
+#navtrie #spaningredients input::placeholder, #navtrie #ingredients input::placeholder, #navtrie #ingredients input input::placeholder {
+  color: #98c0FB;
+}
+#navtrie #spanappareil, #navtrie #appareil, #navtrie #appareil input {
+  background-color: #68D9A4;
+  margin-right: 20px;
+}
+#navtrie #spanappareil input::placeholder, #navtrie #appareil input::placeholder, #navtrie #appareil input input::placeholder {
+  color: #2a752a;
+}
+#navtrie #spanustensiles, #navtrie #ustensiles, #navtrie #ustensiles input {
+  background-color: #ED6454;
+}
+#navtrie #spanustensiles input::placeholder, #navtrie #ustensiles input::placeholder, #navtrie #ustensiles input input::placeholder {
+  color: #6d0202;
+}
+#navtrie .recherchetags {
+  display: none;
+  padding: 22px;
+  border-radius: 8px;
+  flex-direction: column;
+  height: fit-content;
+}
+#navtrie .recherchetags .fa-chevron-up {
+  color: white;
+  font-size: larger;
+}
+#navtrie .recherchetags .inputtags {
+  font-size: large;
+}
+#navtrie .recherchetags .formtags {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 25px;
+}
+#navtrie .listetags {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  color: white;
+}
+#navtrie .listetags .tagsinlist {
+  margin: 5px;
+  margin-right: 50px;
+  cursor: pointer;
+  width: fit-content;
+  max-width: 190px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#listetagsactifs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#listetagsactifs .tagactif {
+  margin-top: 30px;
+  margin-right: 20px;
+  padding: 8px 25px;
+  color: white;
+  width: fit-content;
+  border-radius: 5px;
+  position: relative;
+  padding-right: 50px;
+  padding-left: 20px;
+}
+#listetagsactifs .tagactif_ingredients {
+  background-color: #3282F7;
+}
+#listetagsactifs .tagactif_appareils {
+  background-color: #68D9A4;
+}
+#listetagsactifs .tagactif_ustensiles {
+  background-color: #ED6454;
+}
+#listetagsactifs .croixtag {
+  width: 20px;
+  position: absolute;
+  top: calc(50% - 10px);
+  right: 10px;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=index.css.map */

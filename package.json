@@ -1,0 +1,23 @@
+{
+  "name": "projet-7",
+  "version": "1.0.0",
+  "description": "Projet 7 formation front end",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "sass --watch index.scss index.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arthurchatelain/Projet-7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arthurchatelain/Projet-7/issues"
+  },
+  "homepage": "https://github.com/arthurchatelain/Projet-7#readme",
+  "dependencies": {
+    "sass": "^1.42.1"
+  }
+}

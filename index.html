@@ -1,0 +1,52 @@
+<html>
+   <head>
+       <title id="titre">Les petits plats</title>
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="stylesheet" type="text/css" href="index.css"  />
+       <script src="https://kit.fontawesome.com/5b7dac67c1.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header>
+            <img src="logo.png" alt="Logo du site Web">
+            <h1>Les petits plats</h1>
+        </header>
+        <section id="haut"><form id="formsearchprincipal">
+            <input type="search" id="barrederecherche" placeholder="Rechercher un ingrédient, appareil, ustensile ou une recette">
+            <i class="fas fa-search"></i>
+        </form>
+        <nav id="listetagsactifs"></nav>
+        <nav id="navtrie">
+            <span id="spaningredients" class="possibilitedetrie">Ingrédients<i class="fas fa-chevron-down"></i></span>
+            <section id="ingredients" class="recherchetags">
+                <form id="formsearchingredients" class="formtags">
+                    <input type="search" id="barrederechercheingredients" class="inputtags" placeholder="Rechercher un ingrédient">
+                    <i class="fas fa-chevron-up"></i>
+                </form>
+                <article id="listeingredients" class="listetags"></article>
+            </section>
+            <span id="spanappareil" class="possibilitedetrie">Appareil<i class="fas fa-chevron-down"></i></span>
+            <section id="appareil" class="recherchetags">
+                <form id="formsearchappareil" class="formtags">
+                    <input type="search" id="barrederechercheappareil" class="inputtags" placeholder="Rechercher un appareil">
+                    <i class="fas fa-chevron-up"></i>
+                </form>
+                <article id="listeappareils" class="listetags"></article>
+            </section>
+            <span id="spanustensiles" class="possibilitedetrie">Ustensiles<i class="fas fa-chevron-down"></i></span>
+            <section id="ustensiles" class="recherchetags">
+                <form id="formsearchustensiles" class="formtags">
+                    <input type="search" id="barrederechercheustensiles" class="inputtags" placeholder="Rechercher un ustensile">
+                    <i class="fas fa-chevron-up"></i>
+                </form>
+                <article id="listeustensiles" class="listetags"></article>
+            </section>
+        </nav></section>
+        <main id="main">
+            
+        </main>
+        <script type="text/javascript" src="recipes.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+    </body>
+    
+</html>
