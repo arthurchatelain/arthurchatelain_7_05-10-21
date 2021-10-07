@@ -89,7 +89,7 @@ main .blocrecette .temps {
 .blocdescription .description {
   width: 50%;
   padding-left: 20px;
-  max-height: 90px;
+  max-height: 89px;
   line-height: 15px;
   -webkit-line-clamp: 6;
   display: -webkit-box;
@@ -153,6 +153,7 @@ main .blocrecette .temps {
   border-radius: 8px;
   color: white;
   font-size: larger;
+  cursor: pointer;
 }
 #navtrie .possibilitedetrie .fa-chevron-down {
   padding-left: 30px;
@@ -190,6 +191,7 @@ main .blocrecette .temps {
 }
 #navtrie .recherchetags .inputtags {
   font-size: large;
+  color: white;
 }
 #navtrie .recherchetags .formtags {
   display: flex;
@@ -230,6 +232,7 @@ main .blocrecette .temps {
   position: relative;
   padding-right: 50px;
   padding-left: 20px;
+  display: none;
 }
 #listetagsactifs .tagactif_ingredients {
   background-color: #3282F7;

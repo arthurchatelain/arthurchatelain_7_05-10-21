@@ -1,6 +1,24 @@
+// definition de la fonction factoring qui créer un bloc quelconque
+function creerbloc(type, className, textContent){
+    let bloc = document.createElement(type)
+    bloc.className = className
+    bloc.textContent = textContent
+    return bloc
+}
+
+// fonction qui met en majuscule la première lettre d'une chaîne 
+function premiereLettreMajuscule(chaine)
+{
+    return chaine[0].toUpperCase() + chaine.slice(1);
+}
+
 // fonctionnalité qui ouvre le menu de tag pour chaque possibilité de trie
+
+// variable qui contient les 3 blocs appareils ingredients et ustensiles
 let possibilitedetrie = Array.from(document.getElementsByClassName('possibilitedetrie'))
+// variable qui contient les 3 bloc de recherche, avec la liste et le input 
 let recherchetags = Array.from(document.getElementsByClassName('recherchetags'))
+
 let chevronup = Array.from(document.getElementsByClassName('fa-chevron-up'))
 for(let i = 0; i < possibilitedetrie.length; i++) {
     possibilitedetrie[i].addEventListener('click', function(e){
@@ -8,6 +26,9 @@ for(let i = 0; i < possibilitedetrie.length; i++) {
         recherchetags.forEach(function(item){item.style.display = "none"})
         possibilitedetrie[i].style.display = 'none'
         recherchetags[i].style.display = 'flex'
+        Array.from(document.getElementsByClassName('tagsinlist')).forEach(function(item){
+            item.style.display = 'flex'
+        })
     })
     chevronup[i].addEventListener('click', function(e){
         possibilitedetrie[i].style.display = 'flex'
@@ -43,26 +64,12 @@ appareils = appareils.filter(function(element, position){
     return appareils.indexOf(element) == position
 }).sort()
 
-// fonction qui met en majuscule la première lettre d'une chaîne 
-function premiereLettreMajuscule(chaine)
-{
-    return chaine[0].toUpperCase() + chaine.slice(1);
-}
-
-// definition de la fonction factoring qui créer un bloc quelconque
-function creerbloc(type, className, textContent){
-    let bloc = document.createElement(type)
-    bloc.className = className
-    bloc.textContent = textContent
-    return bloc
-}
-
-// definition de la fonction createtag permettant de creer des tags 
+// definition de la fonction createtag permettant de creer des tags (dans les listes)
 function createtagforlist(element){
     return creerbloc('span', 'tagsinlist', premiereLettreMajuscule(element))
 }
 
-// on créer la liste des tags pour chaque possibilité de trie 
+// on créer la liste des tags pour chaque possibilité de trie (dans les listes)
 ingredients.forEach(function(item){
     let tagactuel = createtagforlist(item)
     tagactuel.className += ' tagsinlist_ingredients'
@@ -79,41 +86,6 @@ ustensiles.forEach(function(item){
     let tagactuel = createtagforlist(item)
     tagactuel.className += ' tagsinlist_ustensiles'
     document.getElementById('listeustensiles').appendChild(tagactuel)
-})
-// variables qui contient les tags actuellement actifs et les croix de ceux-ci 
-let tagsactifs = []
-let croixtag = []
-
-// définition de la fonction qui crée un tag actif
-function createtagactif(keyword, classe){
-    // on test si il n'y aurait pas déjà le même tag d'activé
-    if(tagsactifs.find(element => element == keyword) == undefined){
-        tagsactifs.push(keyword)
-        return creerbloc('span', classe, keyword)
-    }
-}
-
-// variable a écouter pour définit les tags actifs
-let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
-
-// on écoute le clique sur un des tags dans la liste
-tagsinlist.forEach(function(item){
-    item.addEventListener('click', function(){
-        // on creer le tag
-        let tag = createtagactif(item.textContent, 'tagactif ' + item.classList[1].replace('tagsinlist', 'tagactif'))
-        let croix = creerbloc('img', 'croixtag')
-        croix.src = './croixtag.png'
-        tag.appendChild(croix)
-        document.getElementById('listetagsactifs').appendChild(tag)
-        // on met a jour la variable d'écoute pour les croix des tags actifs et on écoute les click sur ces croix
-        croixtag = Array.from(document.getElementsByClassName('croixtag'))
-        croixtag.forEach(function(item){
-            item.addEventListener('click', function(e){
-                item.parentNode.remove()
-                tagsactifs.splice(tagsactifs.indexOf(item.textContent), 1)
-            })
-        })
-    })
 })
 
 // fonction qui creer un bloc de une recette 
@@ -159,7 +131,38 @@ function creerRecettes(id){
     document.getElementById('main').appendChild(blocrecette)
 }
 
+// appel de la fonction par défaut, on creer ainsi tout les blocs recettes
 recipes.forEach(function(item){
     creerRecettes(item.id)
 })
 
+// crétaion des tags actif (mis en display none, mais peuvent être activvé en display flex)
+Array.from(document.getElementsByClassName('tagsinlist')).forEach(function(item){
+    let tag = creerbloc('span', 'tagactif ' + item.classList[1].replace('tagsinlist', 'tagactif'), item.textContent)
+    let croix = creerbloc('img', 'croixtag')
+    croix.src = './croixtag.png'
+    tag.appendChild(croix)
+    document.getElementById('listetagsactifs').appendChild(tag)
+})
+
+// variables qui contient les tags actuellement actifs et les croix de ceux-ci 
+let tag = Array.from(document.getElementsByClassName('tagactif'))
+let croixtag = Array.from(document.getElementsByClassName('croixtag'))
+
+// variable a écouter pour définir les tags actifs (ce sont les tags des listes sur lesquels on clique)
+let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
+
+// on écoute le clique sur un des tags dans la liste pour activer le tag correspondant
+tagsinlist.forEach(function(item){
+    item.addEventListener('click', function(){
+        let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
+        tagactu.style.display = 'flex'
+    })
+})
+
+// on écoute le clique sur les croix pour fermer les tags actifs 
+croixtag.forEach(function(item){
+    item.addEventListener('click', function(){
+        item.parentNode.style.display = 'none'
+    })
+})

@@ -90,7 +90,7 @@ main {
     .description {
         width: 50%;
         padding-left: 20px;
-        max-height: 90px;
+        max-height: 89px;
         line-height: 15px;
         -webkit-line-clamp: 6;
         display: -webkit-box;
@@ -148,6 +148,7 @@ main {
         border-radius: 8px;
         color: white;
         font-size: larger;
+        cursor: pointer;
         .fa-chevron-down {
             padding-left: 30px;
         }
@@ -184,6 +185,7 @@ main {
         }
         .inputtags {
             font-size: large;
+            color: white;
         }
         .formtags {
             display: flex;
@@ -225,6 +227,7 @@ main {
         position: relative;
         padding-right: 50px;
         padding-left: 20px;
+        display: none;
     }
     .tagactif_ingredients {
         background-color: $couleuringredients;
