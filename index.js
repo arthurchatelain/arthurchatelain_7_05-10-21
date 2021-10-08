@@ -22,15 +22,16 @@ let recherchetags = Array.from(document.getElementsByClassName('recherchetags'))
 let chevronup = Array.from(document.getElementsByClassName('fa-chevron-up'))
 for(let i = 0; i < possibilitedetrie.length; i++) {
     possibilitedetrie[i].addEventListener('click', function(e){
+        // cette ligne met la valeurs de tout les input avance a vide
+        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
         possibilitedetrie.forEach(function(item){item.style.display = "flex"})
         recherchetags.forEach(function(item){item.style.display = "none"})
         possibilitedetrie[i].style.display = 'none'
         recherchetags[i].style.display = 'flex'
-        Array.from(document.getElementsByClassName('tagsinlist')).forEach(function(item){
-            item.style.display = 'flex'
-        })
     })
     chevronup[i].addEventListener('click', function(e){
+        // cette ligne met la valeurs de tout les input avance a vide
+        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
         possibilitedetrie[i].style.display = 'flex'
         recherchetags[i].style.display = 'none'
     })
@@ -157,6 +158,8 @@ tagsinlist.forEach(function(item){
     item.addEventListener('click', function(){
         let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
         tagactu.style.display = 'flex'
+        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
+        majKeyWords()
     })
 })
 
@@ -164,5 +167,218 @@ tagsinlist.forEach(function(item){
 croixtag.forEach(function(item){
     item.addEventListener('click', function(){
         item.parentNode.style.display = 'none'
+        majKeyWords()
     })
 })
+
+// FONCTIONNALITEES DE RECHERCHES 
+
+// écoute les inputs des 3 bloc de trie avancé
+
+// on créer trois variables, qui contiennent par défauts tout les tags in list mais qui se filtreront en fonction des filtres actif
+let tagsinlist_ingredients_actif = Array.from(document.getElementsByClassName('tagsinlist_ingredients'))
+let tagsinlist_appareils_actif = Array.from(document.getElementsByClassName('tagsinlist_appareils'))
+let tagsinlist_ustensiles_actif = Array.from(document.getElementsByClassName('tagsinlist_ustensiles'))
+
+// on récupere les inputs et la liste de tout les tagsinlist
+let tagsinlist_ingredients_all = Array.from(document.getElementsByClassName('tagsinlist_ingredients'))
+let tagsinlist_appareils_all = Array.from(document.getElementsByClassName('tagsinlist_appareils'))
+let tagsinlist_ustensiles_all = Array.from(document.getElementsByClassName('tagsinlist_ustensiles'))
+let inputingredients = document.getElementById('barrederechercheingredients')
+let inputappareils = document.getElementById('barrederechercheappareil')
+let inputustensiles = document.getElementById('barrederechercheustensiles')
+
+// fonction qui met a jour les listes des tags actif par rapport aux display flex et none des tagslistall
+function majListTagActif(){
+    tagsinlist_appareils_actif = []
+    tagsinlist_ingredients_actif = []
+    tagsinlist_ustensiles_actif = []
+    tagsinlist_appareils_all.forEach(function(item){
+        if(item.style.display == 'flex'){
+            tagsinlist_appareils_actif.push(item)
+        }
+    })
+    tagsinlist_ustensiles_all.forEach(function(item){
+        if(item.style.display == 'flex'){
+            tagsinlist_ustensiles_actif.push(item)
+        }
+    })
+    tagsinlist_ingredients_all.forEach(function(item){
+        if(item.style.display == 'flex'){
+            tagsinlist_ingredients_actif.push(item)
+        }
+    })
+}
+
+// on écoute
+inputingredients.addEventListener('keyup', function(){
+    let valeur = inputingredients.value
+    tagsinlist_ingredients_actif.forEach(function(item){
+        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+})
+inputappareils.addEventListener('keyup', function(){
+    let valeur = inputappareils.value
+    tagsinlist_appareils_actif.forEach(function(item){
+        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+})
+inputustensiles.addEventListener('keyup', function(){
+    let valeur = inputustensiles.value
+    tagsinlist_ustensiles_actif.forEach(function(item){
+        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+})
+
+// on commence maintenant la vrai recherche et le filtrage par tag 
+
+// on récupere la valeur de linput principal dans une variable
+let inputprincipal = document.getElementById('barrederecherche')
+let valeurinputprincipal
+inputprincipal.addEventListener('keyup', function(){
+    valeurinputprincipal = inputprincipal.value
+    majKeyWords()
+})
+
+// au clic sur entrer dans la barre principale on va sur le main et au clic sur la loupe
+document.getElementById('barrederecherche').addEventListener('keydown', function(e){
+    if(e.key == 'Enter'){
+        e.preventDefault()
+        e.stopPropagation()
+        window.location = "#main"
+    }
+})
+
+document.getElementById('loupesearch').addEventListener('click', function(e){
+    window.location = "#main"
+})
+
+// on définit une variable qui contiendra tout les keywords dans un tableau
+let keywords = []
+
+// on définit une fonction qui mettra à jour ces keywords
+function majKeyWords(){
+    keywords = []
+    Array.from(document.getElementsByClassName('tagactif')).forEach(function(item){
+        if(item.style.display == 'flex'){
+            keywords.push(item.textContent.toLowerCase())
+        }
+    })
+    if(valeurinputprincipal != '' && valeurinputprincipal != undefined){
+        let keywordsinput = valeurinputprincipal.split(' ')
+        keywordsinput.forEach(item => keywords.push(item.toLowerCase()))
+    }
+    majRecettesActives()
+}
+
+// Ensuite il faut définir les recettes encore actives apres la modification des keywords
+// Pour cela il faut comparer els allwords (tout les mots clé) chaque recette avec tout les mots clés activé 
+
+// on définit une fonction qui prend en paramètre l'id d'une recette et qui renverra le allkeywords de la recette 
+function defAllKeyWords(number){
+    number--
+    string = recipes[number].name +' '+ recipes[number].description +' '+ recipes[number].appliance
+    recipes[number].ustensils.forEach(function(item){
+        string += ' ' + item
+    })
+    recipes[number].ingredients.forEach(function(item){
+        string += ' ' + item.ingredient
+    })
+    return string.toLowerCase()
+}
+
+// On va ensuite comparer les allwords de chaque recette avec les keywords et mettre les recettes encore actives dans une variable 
+// par défaut la variable vaut toute les recettes puisque de base toutes les recettes sont actives 
+let nomrecettesactives = []
+let recettesactives = recipes
+recipes.forEach(function(item){nomrecettesactives.push(item.name.toLowerCase())})
+
+function majRecettesActives(){
+    nomrecettesactives = []
+    recettesactives = []
+    recipes.forEach(function(item){
+        let allwords = defAllKeyWords(item.id)
+        let verif = 0
+        let verifbis = 0
+        keywords.forEach(function(element){
+            if(allwords.indexOf(element) != -1){
+                verif++
+            }
+            verifbis++
+        })
+        if(verif == verifbis){
+            nomrecettesactives.push(item.name.toLowerCase())
+            recettesactives.push(item)
+        }
+    })
+    majRecetteAffichage()
+    MajTagsInList()
+    majListTagActif()
+}
+
+// Cette fonction met a jour l'affichage des recettes en fonction des noms des recettes actives
+function majRecetteAffichage(){
+    Array.from(document.getElementsByClassName('blocrecette')).forEach(function(item){
+        item.style.display = 'none'
+        nomrecettesactives.forEach(function(element){
+            if(element.toLowerCase() == item.lastChild.firstChild.firstChild.textContent.toLowerCase()){
+                item.style.display = 'block'
+            }
+        })
+    })
+}
+
+// On creer aussi une fonction qui met a jour les tagsinlist 
+function MajTagsInList(){
+    let ingredientsactif = []
+    let appareilsactif = []
+    let ustensilesactif = []
+    recettesactives.forEach(function(item){
+        appareilsactif.push(item.appliance.toLowerCase())
+        item.ingredients.forEach(function(element){
+            ingredientsactif.push(element.ingredient.toLowerCase())
+        })
+        item.ustensils.forEach(function(element){
+            ustensilesactif.push(element.toLowerCase())
+        })
+    })
+    tagsinlist_appareils_all.forEach(function(item){
+        if(appareilsactif.indexOf(item.textContent.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+    tagsinlist_ingredients_all.forEach(function(item){
+        if(ingredientsactif.indexOf(item.textContent.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+    tagsinlist_ustensiles_all.forEach(function(item){
+        if(ustensilesactif.indexOf(item.textContent.toLowerCase()) == -1){
+            item.style.display = 'none'
+        }
+        else {
+            item.style.display = 'flex'
+        }
+    })
+}

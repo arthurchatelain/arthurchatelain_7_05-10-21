@@ -129,6 +129,7 @@ main .blocrecette .temps {
   top: calc(50% - 32px);
   padding: 20px;
   background-color: #e7e7e7;
+  cursor: pointer;
 }
 #formsearchprincipal #barrederecherche {
   width: 100%;
