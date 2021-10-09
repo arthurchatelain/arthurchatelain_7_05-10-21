@@ -341,6 +341,12 @@ function majRecetteAffichage(){
             }
         })
     })
+    if(Array.from(document.getElementsByClassName('blocrecette')).find(item => item.style.display == "block") == undefined){
+        document.getElementById('norecette').style.display = 'flex'
+    }
+    else {
+        document.getElementById('norecette').style.display = 'none'
+    }
 }
 
 // On creer aussi une fonction qui met a jour les tagsinlist 

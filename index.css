@@ -252,4 +252,11 @@ main .blocrecette .temps {
   cursor: pointer;
 }
 
+#norecette {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: x-large;
+}
+
 /*# sourceMappingURL=index.css.map */
