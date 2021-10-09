@@ -39,30 +39,25 @@ for(let i = 0; i < possibilitedetrie.length; i++) {
     })
 }
 
-// listes des ingrédients des ustensiles et des appareils
+// listes des ingrédients des ustensiles et des appareils + tri par ordre alphabétique et suppresion des doubles
 let ingredients = []
 let ustensiles = []
 let appareils = []
 
 recipes.forEach(function(item){
-    item.ingredients.forEach(function(element){
-        ingredients.push(element.ingredient.toLowerCase())
-    })
+    item.ingredients.forEach(element => ingredients.push(element.ingredient.toLowerCase()))
+    item.ustensils.forEach(element => ustensiles.push(element.toLowerCase()))
+    appareils.push(item.appliance.toLowerCase())
 })
+
 ingredients = ingredients.filter(function(element, position){
     return ingredients.indexOf(element) == position
 }).sort()
-recipes.forEach(function(item){
-    item.ustensils.forEach(function(element){
-        ustensiles.push(element.toLowerCase())
-    })
-})
+
 ustensiles = ustensiles.filter(function(element, position){
     return ustensiles.indexOf(element) == position
 }).sort()
-recipes.forEach(function(item){
-    appareils.push(item.appliance.toLowerCase())
-})
+
 appareils = appareils.filter(function(element, position){
     return appareils.indexOf(element) == position
 }).sort()
