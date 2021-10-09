@@ -151,18 +151,22 @@ let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
 // on écoute le clique sur un des tags dans la liste pour activer le tag correspondant
 tagsinlist.forEach(function(item){
     item.addEventListener('click', function(){
+        console.time('tag')
         let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
         tagactu.style.display = 'flex'
         Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
         majKeyWords()
+        console.timeEnd('tag')
     })
 })
 
 // on écoute le clique sur les croix pour fermer les tags actifs 
 croixtag.forEach(function(item){
     item.addEventListener('click', function(){
+        console.time('stoptag')
         item.parentNode.style.display = 'none'
         majKeyWords()
+        console.timeEnd('stoptag')
     })
 })
 
@@ -234,8 +238,10 @@ inputustensiles.addEventListener('keyup', function(){
 let inputprincipal = document.getElementById('barrederecherche')
 let valeurinputprincipal
 inputprincipal.addEventListener('keyup', function(){
+    console.time('input')
     valeurinputprincipal = inputprincipal.value
     majKeyWords()
+    console.timeEnd('input')
 })
 
 // au clic sur entrer dans la barre principale on va sur le main et au clic sur la loupe
