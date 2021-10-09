@@ -28,12 +28,15 @@ for(let i = 0; i < possibilitedetrie.length; i++) {
         recherchetags.forEach(function(item){item.style.display = "none"})
         possibilitedetrie[i].style.display = 'none'
         recherchetags[i].style.display = 'flex'
+        if(window.innerWidth < 980){
+            possibilitedetrie.forEach(function(item){item.style.display = "none"})
+        }
     })
     chevronup[i].addEventListener('click', function(e){
         // cette ligne met la valeurs de tout les input avance a vide
         Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
-        possibilitedetrie[i].style.display = 'flex'
-        recherchetags[i].style.display = 'none'
+        possibilitedetrie.forEach(function(item){item.style.display = "flex"})
+        recherchetags.forEach(function(item){item.style.display = "none"})
     })
 }
 
