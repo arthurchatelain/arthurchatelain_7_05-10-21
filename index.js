@@ -16,27 +16,26 @@ function premiereLettreMajuscule(chaine)
 
 // variable qui contient les 3 blocs appareils ingredients et ustensiles
 let possibilitedetrie = Array.from(document.getElementsByClassName('possibilitedetrie'))
+
 // variable qui contient les 3 bloc de recherche, avec la liste et le input 
 let recherchetags = Array.from(document.getElementsByClassName('recherchetags'))
-
 let chevronup = Array.from(document.getElementsByClassName('fa-chevron-up'))
+
 for(let i = 0; i < possibilitedetrie.length; i++) {
     possibilitedetrie[i].addEventListener('click', function(e){
         // cette ligne met la valeurs de tout les input avance a vide
         Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
-        possibilitedetrie.forEach(function(item){item.style.display = "flex"})
-        recherchetags.forEach(function(item){item.style.display = "none"})
+        possibilitedetrie.forEach(item => item.style.display = "flex")
+        recherchetags.forEach(item => item.style.display = "none")
         possibilitedetrie[i].style.display = 'none'
         recherchetags[i].style.display = 'flex'
-        if(window.innerWidth < 980){
-            possibilitedetrie.forEach(function(item){item.style.display = "none"})
-        }
+        if(window.innerWidth < 980) possibilitedetrie.forEach(item => item.style.display = "none")
     })
     chevronup[i].addEventListener('click', function(e){
         // cette ligne met la valeurs de tout les input avance a vide
         Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
-        possibilitedetrie.forEach(function(item){item.style.display = "flex"})
-        recherchetags.forEach(function(item){item.style.display = "none"})
+        possibilitedetrie.forEach(item => item.style.display = "flex")
+        recherchetags.forEach(item => item.style.display = "none")
     })
 }
 
@@ -136,9 +135,7 @@ function creerRecettes(id){
 }
 
 // appel de la fonction par défaut, on creer ainsi tout les blocs recettes
-recipes.forEach(function(item){
-    creerRecettes(item.id)
-})
+recipes.forEach(item => creerRecettes(item.id))
 
 // crétaion des tags actif (mis en display none, mais peuvent être activvé en display flex)
 Array.from(document.getElementsByClassName('tagsinlist')).forEach(function(item){
@@ -197,19 +194,13 @@ function majListTagActif(){
     tagsinlist_ingredients_actif = []
     tagsinlist_ustensiles_actif = []
     tagsinlist_appareils_all.forEach(function(item){
-        if(item.style.display == 'flex'){
-            tagsinlist_appareils_actif.push(item)
-        }
+        if(item.style.display == 'flex') tagsinlist_appareils_actif.push(item)
     })
     tagsinlist_ustensiles_all.forEach(function(item){
-        if(item.style.display == 'flex'){
-            tagsinlist_ustensiles_actif.push(item)
-        }
+        if(item.style.display == 'flex') tagsinlist_ustensiles_actif.push(item)
     })
     tagsinlist_ingredients_all.forEach(function(item){
-        if(item.style.display == 'flex'){
-            tagsinlist_ingredients_actif.push(item)
-        }
+        if(item.style.display == 'flex') tagsinlist_ingredients_actif.push(item)
     })
 }
 
@@ -220,9 +211,7 @@ inputingredients.addEventListener('keyup', function(){
         if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
             item.style.display = 'none'
         }
-        else {
-            item.style.display = 'flex'
-        }
+        else item.style.display = 'flex'
     })
 })
 inputappareils.addEventListener('keyup', function(){
@@ -231,9 +220,7 @@ inputappareils.addEventListener('keyup', function(){
         if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
             item.style.display = 'none'
         }
-        else {
-            item.style.display = 'flex'
-        }
+        else item.style.display = 'flex'
     })
 })
 inputustensiles.addEventListener('keyup', function(){
@@ -242,9 +229,7 @@ inputustensiles.addEventListener('keyup', function(){
         if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
             item.style.display = 'none'
         }
-        else {
-            item.style.display = 'flex'
-        }
+        else item.style.display = 'flex'
     })
 })
 
@@ -267,9 +252,7 @@ document.getElementById('barrederecherche').addEventListener('keydown', function
     }
 })
 
-document.getElementById('loupesearch').addEventListener('click', function(e){
-    window.location = "#main"
-})
+document.getElementById('loupesearch').addEventListener('click', e => window.location = "#main")
 
 // on définit une variable qui contiendra tout les keywords dans un tableau
 let keywords = []
@@ -296,12 +279,8 @@ function majKeyWords(){
 function defAllKeyWords(number){
     number--
     string = recipes[number].name +' '+ recipes[number].description +' '+ recipes[number].appliance
-    recipes[number].ustensils.forEach(function(item){
-        string += ' ' + item
-    })
-    recipes[number].ingredients.forEach(function(item){
-        string += ' ' + item.ingredient
-    })
+    recipes[number].ustensils.forEach(item => string += ' ' + item)
+    recipes[number].ingredients.forEach(item =>string += ' ' + item.ingredient)
     return string.toLowerCase()
 }
 
@@ -309,7 +288,7 @@ function defAllKeyWords(number){
 // par défaut la variable vaut toute les recettes puisque de base toutes les recettes sont actives 
 let nomrecettesactives = []
 let recettesactives = recipes
-recipes.forEach(function(item){nomrecettesactives.push(item.name.toLowerCase())})
+recipes.forEach(item => nomrecettesactives.push(item.name.toLowerCase()))
 
 function majRecettesActives(){
     nomrecettesactives = []
@@ -319,9 +298,7 @@ function majRecettesActives(){
         let verif = 0
         let verifbis = 0
         keywords.forEach(function(element){
-            if(allwords.indexOf(element) != -1){
-                verif++
-            }
+            allwords.indexOf(element) != -1 ? verif++ : verif = verif
             verifbis++
         })
         if(verif == verifbis){
@@ -347,9 +324,7 @@ function majRecetteAffichage(){
     if(Array.from(document.getElementsByClassName('blocrecette')).find(item => item.style.display == "block") == undefined){
         document.getElementById('norecette').style.display = 'flex'
     }
-    else {
-        document.getElementById('norecette').style.display = 'none'
-    }
+    else document.getElementById('norecette').style.display = 'none'
 }
 
 // On creer aussi une fonction qui met a jour les tagsinlist 
@@ -359,35 +334,16 @@ function MajTagsInList(){
     let ustensilesactif = []
     recettesactives.forEach(function(item){
         appareilsactif.push(item.appliance.toLowerCase())
-        item.ingredients.forEach(function(element){
-            ingredientsactif.push(element.ingredient.toLowerCase())
-        })
-        item.ustensils.forEach(function(element){
-            ustensilesactif.push(element.toLowerCase())
-        })
+        item.ingredients.forEach(element => ingredientsactif.push(element.ingredient.toLowerCase()))
+        item.ustensils.forEach(element => ustensilesactif.push(element.toLowerCase()))
     })
     tagsinlist_appareils_all.forEach(function(item){
-        if(appareilsactif.indexOf(item.textContent.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else {
-            item.style.display = 'flex'
-        }
+        appareilsactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
     })
     tagsinlist_ingredients_all.forEach(function(item){
-        if(ingredientsactif.indexOf(item.textContent.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else {
-            item.style.display = 'flex'
-        }
+        ingredientsactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
     })
     tagsinlist_ustensiles_all.forEach(function(item){
-        if(ustensilesactif.indexOf(item.textContent.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else {
-            item.style.display = 'flex'
-        }
+        ustensilesactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
     })
 }
