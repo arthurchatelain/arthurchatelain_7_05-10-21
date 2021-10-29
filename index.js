@@ -335,18 +335,17 @@ function tagsVerif(typeTagsAll, typeTagsActif) {
     })
 }
 
+// fonction qui transforme un tableau de tableau en un seul tableau (pour unifier des tabeleau de chaine de caracteres)
+function oneTab (item){
+    return item.join().toString().split(',')
+}
+
 // On creer aussi une fonction qui met a jour les tagsinlist 
 function MajTagsInList(){
-    // on met a vide les tableaux de tags actifs
-    let ingredientsactif = []
-    let appareilsactif = []
-    let ustensilesactif = []
-    // on les remplit avec les tags des recettes actives
-    recettesactives.forEach(function(item){
-        appareilsactif.push(item.appliance.toLowerCase())
-        item.ingredients.forEach(element => ingredientsactif.push(element.ingredient.toLowerCase()))
-        item.ustensils.forEach(element => ustensilesactif.push(element.toLowerCase()))
-    })
+    // on creer les tableaux contenant les tags actifs
+    let ingredientsactif = oneTab(recettesactives.map(i => i.ingredients.map(i => i.ingredient.toLowerCase())))
+    let appareilsactif = recettesactives.map(i => i.appliance.toLowerCase())
+    let ustensilesactif = oneTab(recettesactives.map(i => i.ustensils.map(i => i.toLowerCase())))
     // on met a jour visuellement les tags
     tagsVerif(tagsinlist_appareils_all, appareilsactif)
     tagsVerif(tagsinlist_ingredients_all, ingredientsactif)
