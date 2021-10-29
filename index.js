@@ -151,22 +151,18 @@ let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
 // on écoute le clique sur un des tags dans la liste pour activer le tag correspondant
 tagsinlist.forEach(function(item){
     item.addEventListener('click', function(){
-        console.time('tag')
         let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
         tagactu.style.display = 'flex'
         Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
         majKeyWords()
-        console.timeEnd('tag')
     })
 })
 
 // on écoute le clique sur les croix pour fermer les tags actifs 
 croixtag.forEach(function(item){
     item.addEventListener('click', function(){
-        console.time('stoptag')
         item.parentNode.style.display = 'none'
         majKeyWords()
-        console.timeEnd('stoptag')
     })
 })
 
@@ -238,10 +234,8 @@ inputustensiles.addEventListener('keyup', function(){
 let inputprincipal = document.getElementById('barrederecherche')
 let valeurinputprincipal
 inputprincipal.addEventListener('keyup', function(){
-    console.time('input')
     valeurinputprincipal = inputprincipal.value
     majKeyWords()
-    console.timeEnd('input')
 })
 
 // au clic sur entrer dans la barre principale on va sur le main et au clic sur la loupe
@@ -278,11 +272,12 @@ function majKeyWords(){
 
 // on définit une fonction qui prend en paramètre l'id d'une recette et qui renverra le allkeywords de la recette 
 function defAllKeyWords(number){
-    number--
-    string = recipes[number].name +' '+ recipes[number].description +' '+ recipes[number].appliance
-    recipes[number].ustensils.forEach(item => string += ' ' + item)
-    recipes[number].ingredients.forEach(item =>string += ' ' + item.ingredient)
-    return string.toLowerCase()
+    let recipe = recipes.find(i => i.id == number)
+    return recipe.ingredients
+        .map(i => i.ingredient)
+        .concat(recipe.ustensils, recipe.name, recipe.description, recipe.appliance)
+        .join(' ')
+        .toLowerCase()
 }
 
 // On va ensuite comparer les allwords de chaque recette avec les keywords et mettre les recettes encore actives dans une variable 
@@ -328,23 +323,32 @@ function majRecetteAffichage(){
     else document.getElementById('norecette').style.display = 'none'
 }
 
+// Fonction qui affiche ou non un tag
+function tagAffiche (typeActif, item) {
+    typeActif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
+}
+
+// Fonction qui appelle tagAffiche() en fonction du type du tag
+function tagsVerif(typeTagsAll, typeTagsActif) {
+    typeTagsAll.forEach(function(item){
+        tagAffiche(typeTagsActif, item)
+    })
+}
+
 // On creer aussi une fonction qui met a jour les tagsinlist 
 function MajTagsInList(){
+    // on met a vide les tableaux de tags actifs
     let ingredientsactif = []
     let appareilsactif = []
     let ustensilesactif = []
+    // on les remplit avec les tags des recettes actives
     recettesactives.forEach(function(item){
         appareilsactif.push(item.appliance.toLowerCase())
         item.ingredients.forEach(element => ingredientsactif.push(element.ingredient.toLowerCase()))
         item.ustensils.forEach(element => ustensilesactif.push(element.toLowerCase()))
     })
-    tagsinlist_appareils_all.forEach(function(item){
-        appareilsactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
-    })
-    tagsinlist_ingredients_all.forEach(function(item){
-        ingredientsactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
-    })
-    tagsinlist_ustensiles_all.forEach(function(item){
-        ustensilesactif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
-    })
+    // on met a jour visuellement les tags
+    tagsVerif(tagsinlist_appareils_all, appareilsactif)
+    tagsVerif(tagsinlist_ingredients_all, ingredientsactif)
+    tagsVerif(tagsinlist_ustensiles_all, ustensilesactif)
 }
