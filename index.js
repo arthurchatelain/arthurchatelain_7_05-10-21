@@ -185,18 +185,9 @@ let inputustensiles = document.getElementById('barrederechercheustensiles')
 
 // fonction qui met a jour les listes des tags actif par rapport aux display flex et none des tagslistall
 function majListTagActif(){
-    tagsinlist_appareils_actif = []
-    tagsinlist_ingredients_actif = []
-    tagsinlist_ustensiles_actif = []
-    tagsinlist_appareils_all.forEach(function(item){
-        if(item.style.display == 'flex') tagsinlist_appareils_actif.push(item)
-    })
-    tagsinlist_ustensiles_all.forEach(function(item){
-        if(item.style.display == 'flex') tagsinlist_ustensiles_actif.push(item)
-    })
-    tagsinlist_ingredients_all.forEach(function(item){
-        if(item.style.display == 'flex') tagsinlist_ingredients_actif.push(item)
-    })
+    tagsinlist_appareils_actif = tagsinlist_appareils_all.filter(i => i.style.display == 'flex')
+    tagsinlist_ingredients_actif = tagsinlist_ingredients_all.filter(i => i.style.display == 'flex')
+    tagsinlist_ustensiles_actif = tagsinlist_ustensiles_all.filter(i => i.style.display == 'flex')
 }
 
 // on écoute
@@ -254,16 +245,11 @@ let keywords = []
 
 // on définit une fonction qui mettra à jour ces keywords
 function majKeyWords(){
-    keywords = []
-    Array.from(document.getElementsByClassName('tagactif')).forEach(function(item){
-        if(item.style.display == 'flex'){
-            keywords.push(item.textContent.toLowerCase())
-        }
-    })
-    if(valeurinputprincipal != '' && valeurinputprincipal != undefined){
-        let keywordsinput = valeurinputprincipal.split(' ')
-        keywordsinput.forEach(item => keywords.push(item.toLowerCase()))
-    }
+    let tagactif = Array.from(document.getElementsByClassName('tagactif'))
+    if(valeurinputprincipal != undefined) keywordsinput = valeurinputprincipal.split(' ')
+    keywords = tagactif.filter(i => i.style.display == 'flex')
+        .map(i => i.textContent.toLowerCase())
+        .concat(keywordsinput)
     majRecettesActives()
 }
 
@@ -282,26 +268,16 @@ function defAllKeyWords(number){
 
 // On va ensuite comparer les allwords de chaque recette avec les keywords et mettre les recettes encore actives dans une variable 
 // par défaut la variable vaut toute les recettes puisque de base toutes les recettes sont actives 
-let nomrecettesactives = []
+let nomrecettesactives = recipes.map(i => i.name.toLowerCase())
 let recettesactives = recipes
-recipes.forEach(item => nomrecettesactives.push(item.name.toLowerCase()))
 
 function majRecettesActives(){
-    nomrecettesactives = []
-    recettesactives = []
-    recipes.forEach(function(item){
+    recettesactives = recipes.filter(function(item){
         let allwords = defAllKeyWords(item.id)
-        let verif = 0
-        let verifbis = 0
-        keywords.forEach(function(element){
-            allwords.indexOf(element) != -1 ? verif++ : verif = verif
-            verifbis++
-        })
-        if(verif == verifbis){
-            nomrecettesactives.push(item.name.toLowerCase())
-            recettesactives.push(item)
-        }
+        let keywordscopie = keywords.filter(i => allwords.indexOf(i) != -1)
+        if(keywords.length === keywordscopie.length) return true
     })
+    nomrecettesactives = recettesactives.map(i => i.name.toLowerCase())
     majRecetteAffichage()
     MajTagsInList()
     majListTagActif()
@@ -351,3 +327,10 @@ function MajTagsInList(){
     tagsVerif(tagsinlist_ingredients_all, ingredientsactif)
     tagsVerif(tagsinlist_ustensiles_all, ustensilesactif)
 }
+
+// Cette branche est la deuxième, et utilise plutôt des element map, filter etc que des boucles for.
+// Les lignes et fonctions modifié (par rapport à la branche main) sont : 
+// majListTagActif() : 188 - 190
+// majKeyWords() : 248 - 252
+// nomsrecettesactives : 271
+// majRecettesActives() : 275, 277 - 280
