@@ -6,13 +6,20 @@ function creerbloc(type, className, textContent){
     return bloc
 }
 
-// fonction qui met en majuscule la première lettre d'une chaîne 
-function premiereLettreMajuscule(chaine)
-{
-    return chaine[0].toUpperCase() + chaine.slice(1);
-}
+// fonction qui transforme un tableau de tableau en un seul tableau (pour unifier des tabeleau de chaine de caracteres)
+const oneTab = i => i.join().toString().split(',')
 
-// fonctionnalité qui ouvre le menu de tag pour chaque possibilité de trie
+// fonction qui supprime les doublons d'un tableaux 
+const supDoublons = item => item.filter( (i, p) => item.indexOf(i) == p )
+
+// fonction qui met en majuscule la première lettre d'une chaîne
+const premiereLettreMajuscule = (chaine) => chaine[0].toUpperCase() + chaine.slice(1)
+
+// Fonctions qui affiche/cache un bloc 
+const affiche = i => i.style.display = 'flex'
+const cacher = i => i.style.display = 'none' 
+
+// Fonctionnalitée qui ouvre le menu de tag pour chaque possibilité de trie
 
 // variable qui contient les 3 blocs appareils ingredients et ustensiles
 let possibilitedetrie = Array.from(document.getElementsByClassName('possibilitedetrie'))
@@ -21,118 +28,77 @@ let possibilitedetrie = Array.from(document.getElementsByClassName('possibilited
 let recherchetags = Array.from(document.getElementsByClassName('recherchetags'))
 let chevronup = Array.from(document.getElementsByClassName('fa-chevron-up'))
 
-for(let i = 0; i < possibilitedetrie.length; i++) {
-    possibilitedetrie[i].addEventListener('click', function(e){
-        // cette ligne met la valeurs de tout les input avance a vide
-        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
-        possibilitedetrie.forEach(item => item.style.display = "flex")
-        recherchetags.forEach(item => item.style.display = "none")
-        possibilitedetrie[i].style.display = 'none'
-        recherchetags[i].style.display = 'flex'
-        if(window.innerWidth < 980) possibilitedetrie.forEach(item => item.style.display = "none")
-    })
-    chevronup[i].addEventListener('click', function(e){
-        // cette ligne met la valeurs de tout les input avance a vide
-        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
-        possibilitedetrie.forEach(item => item.style.display = "flex")
-        recherchetags.forEach(item => item.style.display = "none")
-    })
+// fonction qui gere la fermeture visuelle des champ de recherche avancés
+const closeAdvancedResearch = () => {
+    Array.from(document.getElementsByClassName('inputtags')).forEach(i => i.value = '')
+    possibilitedetrie.forEach(i => affiche(i))
+    recherchetags.forEach(i => cacher(i))
 }
 
+// Ouverture/fermeture des champs de recherches avancés
+for(let i = 0; i < possibilitedetrie.length; i++) {
+    possibilitedetrie[i].addEventListener('click', () => {
+        closeAdvancedResearch()
+        cacher(possibilitedetrie[i])
+        affiche(recherchetags[i])
+        if(window.innerWidth < 980) possibilitedetrie.forEach(item => cacher(item))
+    })
+    chevronup[i].addEventListener('click', () => closeAdvancedResearch())
+}
+
+// fonction qui organise les tags (suppression des doublons, unn seul tableau, classement par ordre alphabétiqueet travail à effectuer dans recipes)
+const orgTag = (item) => supDoublons(oneTab(recipes.map(item))).sort()
+
 // listes des ingrédients des ustensiles et des appareils + tri par ordre alphabétique et suppresion des doubles
-let ingredients = []
-let ustensiles = []
-let appareils = []
-
-recipes.forEach(function(item){
-    item.ingredients.forEach(element => ingredients.push(element.ingredient.toLowerCase()))
-    item.ustensils.forEach(element => ustensiles.push(element.toLowerCase()))
-    appareils.push(item.appliance.toLowerCase())
-})
-
-ingredients = ingredients.filter(function(element, position){
-    return ingredients.indexOf(element) == position
-}).sort()
-
-ustensiles = ustensiles.filter(function(element, position){
-    return ustensiles.indexOf(element) == position
-}).sort()
-
-appareils = appareils.filter(function(element, position){
-    return appareils.indexOf(element) == position
-}).sort()
+let ingredients =  orgTag(i => i.ingredients.map(item => item.ingredient.toLowerCase()))
+let ustensiles = orgTag(i => i.ustensils.map(item => item.toLowerCase()))
+let appareils = orgTag(i => i.appliance.toLowerCase())
 
 // definition de la fonction createtag permettant de creer des tags (dans les listes)
-function createtagforlist(element){
-    return creerbloc('span', 'tagsinlist', premiereLettreMajuscule(element))
+const createtagforlist = (element, type) => {
+    let tagactuel = creerbloc('span', 'tagsinlist' + ' tagsinlist_' + type, premiereLettreMajuscule(element))
+    document.getElementById('liste' + type).appendChild(tagactuel)
 }
 
 // on créer la liste des tags pour chaque possibilité de trie (dans les listes)
-ingredients.forEach(function(item){
-    let tagactuel = createtagforlist(item)
-    tagactuel.className += ' tagsinlist_ingredients'
-    document.getElementById('listeingredients').appendChild(tagactuel)
-})
-
-appareils.forEach(function(item){
-    let tagactuel = createtagforlist(item)
-    tagactuel.className += ' tagsinlist_appareils'
-    document.getElementById('listeappareils').appendChild(tagactuel)
-})
-
-ustensiles.forEach(function(item){
-    let tagactuel = createtagforlist(item)
-    tagactuel.className += ' tagsinlist_ustensiles'
-    document.getElementById('listeustensiles').appendChild(tagactuel)
-})
+ingredients.forEach(i => createtagforlist(i, 'ingredients'))
+appareils.forEach(i => createtagforlist(i, 'appareils'))
+ustensiles.forEach(i => createtagforlist(i, 'ustensiles'))
 
 // fonction qui creer un bloc de une recette 
 function creerRecettes(id){
-    let recette = recipes[id - 1];
+    let recette = recipes.find(i => i.id == id) // on prend la recette du bloc que l'on veut créer
+    // On creer le bloc de base
     let blocrecette = creerbloc('article', 'blocrecette')
-    let imagegrise = creerbloc('div', 'imagegrise')
-    let recettedescription = creerbloc('section', 'recettedescription')
-    let presentation = creerbloc('section', 'presentation')
-    let titre = creerbloc('h2', 'titrerecette', recette.name)
-    let divtemps = creerbloc('div', 'divtemps')
-    let horloge = creerbloc('img', 'horloge')
-    horloge.src = './horloge.png'
-    let temps = creerbloc('p', 'temps', recette.time + ' min')
-    divtemps.append(horloge, temps)
-    presentation.append(titre, divtemps)
-    let blocdescription = creerbloc('section', 'blocdescription')
-    let blocingredients = creerbloc('div', 'blocingredients')
+    blocrecette.innerHTML = recetteView
+    document.getElementById('main').appendChild(blocrecette)
+    let blocDeTravail = document.getElementById('main').lastChild
+    // On peut maintenant personnaliser le bloc
+    const content = (type, content) => blocDeTravail.getElementsByClassName(type)[0].textContent = content
+    content('titrerecette', recette.name)
+    content('temps', recette.time + ' min')
+    content('description', recette.description)
+    // On ajoute enfin les ingrédients
+    let blocingredients = blocDeTravail.getElementsByClassName('blocingredients')[0]
     recette.ingredients.forEach(function(item){
-        let ingredient
-        let quantite
         let blocingredient = creerbloc('div', 'texteingredient')
-        if(item.quantity == undefined && item.unit == undefined) {
-            ingredient = creerbloc('p', 'ingredient', item.ingredient)
-            blocingredient.appendChild(ingredient)
-        }
-        else if (item.quantity != undefined && item.unit == undefined){
-            ingredient = creerbloc('p', 'ingredient', item.ingredient)
-            quantite = creerbloc('p', 'ingredientinfo' ,  ' : ' + item.quantity)
-            blocingredient.append(ingredient, quantite)
+        let ingredient = creerbloc('p', 'ingredient', item.ingredient)
+        if(item.quantity == undefined) blocingredient.appendChild(ingredient)
+        else if (item.unit == undefined){
+            blocingredient.append(ingredient, creerbloc('p', 'ingredientinfo' ,  ' : ' + item.quantity))
         }
         else {
-            ingredient = creerbloc('p', 'ingredient', item.ingredient)
-            quantite = creerbloc('p', 'ingredientinfo' ,  ' : ' + item.quantity + ' ' + item.unit)
+            let quantite = creerbloc('p', 'ingredientinfo' ,  ' : ' + item.quantity + ' ' + item.unit)
             blocingredient.append(ingredient, quantite)
         }
         blocingredients.appendChild(blocingredient)
     })
-    let description = creerbloc('p', 'description', recette.description)
-    blocdescription.append(blocingredients, description)
-    recettedescription.append(presentation, blocdescription)
-    blocrecette.append(imagegrise, recettedescription)
-    document.getElementById('main').appendChild(blocrecette)
 }
 
 // appel de la fonction par défaut, on creer ainsi tout les blocs recettes
 recipes.forEach(item => creerRecettes(item.id))
 
-// crétaion des tags actif (mis en display none, mais peuvent être activvé en display flex)
+// création des tags actif (mis en display none, mais peuvent être activvé en display flex)
 Array.from(document.getElementsByClassName('tagsinlist')).forEach(function(item){
     let tag = creerbloc('span', 'tagactif ' + item.classList[1].replace('tagsinlist', 'tagactif'), item.textContent)
     let croix = creerbloc('img', 'croixtag')
@@ -151,9 +117,8 @@ let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
 // on écoute le clique sur un des tags dans la liste pour activer le tag correspondant
 tagsinlist.forEach(function(item){
     item.addEventListener('click', function(){
-        let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
-        tagactu.style.display = 'flex'
-        Array.from(document.getElementsByClassName('inputtags')).forEach(item => item.value = '')
+        affiche(tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase()))
+        Array.from(document.getElementsByClassName('inputtags')).forEach(i => i.value = '')
         majKeyWords()
     })
 })
@@ -161,7 +126,7 @@ tagsinlist.forEach(function(item){
 // on écoute le clique sur les croix pour fermer les tags actifs 
 croixtag.forEach(function(item){
     item.addEventListener('click', function(){
-        item.parentNode.style.display = 'none'
+        cacher(item.parentNode)
         majKeyWords()
     })
 })
@@ -169,11 +134,6 @@ croixtag.forEach(function(item){
 // FONCTIONNALITEES DE RECHERCHES 
 
 // écoute les inputs des 3 bloc de trie avancé
-
-// on créer trois variables, qui contiennent par défauts tout les tags in list mais qui se filtreront en fonction des filtres actif
-let tagsinlist_ingredients_actif = Array.from(document.getElementsByClassName('tagsinlist_ingredients'))
-let tagsinlist_appareils_actif = Array.from(document.getElementsByClassName('tagsinlist_appareils'))
-let tagsinlist_ustensiles_actif = Array.from(document.getElementsByClassName('tagsinlist_ustensiles'))
 
 // on récupere les inputs et la liste de tout les tagsinlist
 let tagsinlist_ingredients_all = Array.from(document.getElementsByClassName('tagsinlist_ingredients'))
@@ -183,6 +143,11 @@ let inputingredients = document.getElementById('barrederechercheingredients')
 let inputappareils = document.getElementById('barrederechercheappareil')
 let inputustensiles = document.getElementById('barrederechercheustensiles')
 
+// on créer trois variables, qui contiennent par défauts tout les tags in list mais qui se filtreront en fonction des filtres actif
+let tagsinlist_ingredients_actif = tagsinlist_ingredients_all
+let tagsinlist_appareils_actif = tagsinlist_appareils_all
+let tagsinlist_ustensiles_actif = tagsinlist_ustensiles_all
+
 // fonction qui met a jour les listes des tags actif par rapport aux display flex et none des tagslistall
 function majListTagActif(){
     tagsinlist_appareils_actif = tagsinlist_appareils_all.filter(i => i.style.display == 'flex')
@@ -190,61 +155,34 @@ function majListTagActif(){
     tagsinlist_ustensiles_actif = tagsinlist_ustensiles_all.filter(i => i.style.display == 'flex')
 }
 
+// fonction qui servira à l'écoute des inputs de recherche avancé
+const adInput = (input, tags) => tags.forEach((i) => i.textContent.toLowerCase().indexOf(input) == -1 ? cacher(i) : affiche(i)) 
+
 // on écoute
-inputingredients.addEventListener('keyup', function(){
-    let valeur = inputingredients.value
-    tagsinlist_ingredients_actif.forEach(function(item){
-        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else item.style.display = 'flex'
-    })
-})
-inputappareils.addEventListener('keyup', function(){
-    let valeur = inputappareils.value
-    tagsinlist_appareils_actif.forEach(function(item){
-        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else item.style.display = 'flex'
-    })
-})
-inputustensiles.addEventListener('keyup', function(){
-    let valeur = inputustensiles.value
-    tagsinlist_ustensiles_actif.forEach(function(item){
-        if(item.textContent.toLowerCase().indexOf(valeur.toLowerCase()) == -1){
-            item.style.display = 'none'
-        }
-        else item.style.display = 'flex'
-    })
-})
+inputingredients.addEventListener('keyup', () => adInput(inputingredients.value.toLowerCase(), tagsinlist_ingredients_actif))
+inputappareils.addEventListener('keyup', () => adInput(inputappareils.value.toLowerCase(), tagsinlist_appareils_actif))
+inputustensiles.addEventListener('keyup', () => adInput(inputustensiles.value.toLowerCase(), tagsinlist_ustensiles_actif))
 
 // on commence maintenant la vrai recherche et le filtrage par tag 
 
 // on récupere la valeur de linput principal dans une variable
 let inputprincipal = document.getElementById('barrederecherche')
 let valeurinputprincipal
-inputprincipal.addEventListener('keyup', function(){
+inputprincipal.addEventListener('keyup', () => {
     valeurinputprincipal = inputprincipal.value
     majKeyWords()
 })
 
 // au clic sur entrer dans la barre principale on va sur le main et au clic sur la loupe
-document.getElementById('barrederecherche').addEventListener('keydown', function(e){
-    if(e.key == 'Enter'){
-        e.preventDefault()
-        e.stopPropagation()
-        window.location = "#main"
-    }
-})
-
-document.getElementById('loupesearch').addEventListener('click', e => window.location = "#main")
+inputprincipal.addEventListener('keydown', (e) => e.key == 'Enter' ? window.location = "#main" : e)
+document.getElementById('loupesearch').addEventListener('click', () => window.location = "#main")
 
 // on définit une variable qui contiendra tout les keywords dans un tableau
 let keywords = []
 
 // on définit une fonction qui mettra à jour ces keywords
 function majKeyWords(){
+    let keywordsinput = []
     let tagactif = Array.from(document.getElementsByClassName('tagactif'))
     if(valeurinputprincipal != undefined) keywordsinput = valeurinputprincipal.split(' ')
     keywords = tagactif.filter(i => i.style.display == 'flex')
@@ -272,10 +210,10 @@ let nomrecettesactives = recipes.map(i => i.name.toLowerCase())
 let recettesactives = recipes
 
 function majRecettesActives(){
-    recettesactives = recipes.filter(function(item){
+    recettesactives = recipes.filter((item) => {
         let allwords = defAllKeyWords(item.id)
         let keywordscopie = keywords.filter(i => allwords.indexOf(i) != -1)
-        if(keywords.length === keywordscopie.length) return true
+        keywords.length === keywordscopie.length ? true : false
     })
     nomrecettesactives = recettesactives.map(i => i.name.toLowerCase())
     majRecetteAffichage()
@@ -283,38 +221,26 @@ function majRecettesActives(){
     majListTagActif()
 }
 
+// bloc norecette
+const norecette = document.getElementById('norecette')
+
 // Cette fonction met a jour l'affichage des recettes en fonction des noms des recettes actives
 function majRecetteAffichage(){
-    Array.from(document.getElementsByClassName('blocrecette')).forEach(function(item){
-        item.style.display = 'none'
-        nomrecettesactives.forEach(function(element){
-            if(element.toLowerCase() == item.lastChild.firstChild.firstChild.textContent.toLowerCase()){
-                item.style.display = 'block'
-            }
+    let blocrecetteact = Array.from(document.getElementsByClassName('blocrecette'))
+    blocrecetteact.forEach(function(i){
+        cacher(i)
+        nomrecettesactives.forEach((el) => {
+            if(el == i.getElementsByClassName('titrerecette')[0].textContent.toLowerCase()) i.style.display = 'block'
         })
     })
-    if(Array.from(document.getElementsByClassName('blocrecette')).find(item => item.style.display == "block") == undefined){
-        document.getElementById('norecette').style.display = 'flex'
-    }
-    else document.getElementById('norecette').style.display = 'none'
+    blocrecetteact.find(i => i.style.display == "block") == undefined ? affiche(norecette) : cacher(norecette)
 }
 
 // Fonction qui affiche ou non un tag
-function tagAffiche (typeActif, item) {
-    typeActif.indexOf(item.textContent.toLowerCase()) == -1 ? item.style.display = 'none' : item.style.display = 'flex'
-}
+const tagAffiche = (type, i) => type.indexOf(i.textContent.toLowerCase()) == -1 ? cacher(i) : affiche(i)
 
 // Fonction qui appelle tagAffiche() en fonction du type du tag
-function tagsVerif(typeTagsAll, typeTagsActif) {
-    typeTagsAll.forEach(function(item){
-        tagAffiche(typeTagsActif, item)
-    })
-}
-
-// fonction qui transforme un tableau de tableau en un seul tableau (pour unifier des tabeleau de chaine de caracteres)
-function oneTab (item){
-    return item.join().toString().split(',')
-}
+const tagsVerif = (typeAll, typeActif) => typeAll.forEach(i => tagAffiche(typeActif, i))
 
 // On creer aussi une fonction qui met a jour les tagsinlist 
 function MajTagsInList(){
