@@ -327,10 +327,3 @@ function MajTagsInList(){
     tagsVerif(tagsinlist_ingredients_all, ingredientsactif)
     tagsVerif(tagsinlist_ustensiles_all, ustensilesactif)
 }
-
-// Cette branche est la deuxième, et utilise plutôt des elements map, filter etc que des boucles for.
-// Les lignes et fonctions modifiées (par rapport à la branche main) sont : 
-// majListTagActif() : 188 - 190
-// majKeyWords() : 248 - 252
-// nomsrecettesactives : 271
-// majRecettesActives() : 275, 277 - 280
