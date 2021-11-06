@@ -212,8 +212,8 @@ let recettesactives = recipes
 function majRecettesActives(){
     recettesactives = recipes.filter((item) => {
         let allwords = defAllKeyWords(item.id)
-        let keywordscopie = keywords.filter(i => allwords.indexOf(i) != -1)
-        keywords.length === keywordscopie.length ? true : false
+        let keywordsActiveRecipe = keywords.filter(i => allwords.indexOf(i) != -1)
+        return keywordsActiveRecipe.length === keywords.length
     })
     nomrecettesactives = recettesactives.map(i => i.name.toLowerCase())
     majRecetteAffichage()
