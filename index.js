@@ -7,10 +7,7 @@ function creerbloc(type, className, textContent){
 }
 
 // fonction qui met en majuscule la première lettre d'une chaîne 
-function premiereLettreMajuscule(chaine)
-{
-    return chaine[0].toUpperCase() + chaine.slice(1);
-}
+const premiereLettreMajuscule = (chaine) => chaine[0].toUpperCase() + chaine.slice(1)
 
 // fonctionnalité qui ouvre le menu de tag pour chaque possibilité de trie
 
@@ -44,23 +41,31 @@ let ingredients = []
 let ustensiles = []
 let appareils = []
 
-recipes.forEach(function(item){
+const each = (tableau, fonction) => {
+    for(let i = 0; i < tableau.length; i++){
+        fonction(tableau[i], i)
+    }
+}
+
+each(recipes, (item) => {
     item.ingredients.forEach(element => ingredients.push(element.ingredient.toLowerCase()))
     item.ustensils.forEach(element => ustensiles.push(element.toLowerCase()))
     appareils.push(item.appliance.toLowerCase())
 })
 
-ingredients = ingredients.filter(function(element, position){
-    return ingredients.indexOf(element) == position
-}).sort()
+const supDoublons = (tableau) => {
+    let filteredTab = []
+    for (let i = 0; i < tableau.length; i++) {
+        if (tableau.indexOf(tableau[i]) === i) {
+            filteredTab.push(tableau[i])
+        }
+    }
+    return filteredTab.sort()
+}
 
-ustensiles = ustensiles.filter(function(element, position){
-    return ustensiles.indexOf(element) == position
-}).sort()
-
-appareils = appareils.filter(function(element, position){
-    return appareils.indexOf(element) == position
-}).sort()
+ingredients = supDoublons(ingredients)
+ustensiles = supDoublons(ustensiles)
+appareils = supDoublons(appareils)
 
 // definition de la fonction createtag permettant de creer des tags (dans les listes)
 function createtagforlist(element){
@@ -149,7 +154,7 @@ let croixtag = Array.from(document.getElementsByClassName('croixtag'))
 let tagsinlist = Array.from(document.getElementsByClassName('tagsinlist'))
 
 // on écoute le clique sur un des tags dans la liste pour activer le tag correspondant
-tagsinlist.forEach(function(item){
+each(tagsinlist, (item) => {
     item.addEventListener('click', function(){
         let tagactu = tag.find(element => element.textContent.toLowerCase() == item.textContent.toLowerCase())
         tagactu.style.display = 'flex'
@@ -158,12 +163,12 @@ tagsinlist.forEach(function(item){
     })
 })
 
-// on écoute le clique sur les croix pour fermer les tags actifs 
-croixtag.forEach(function(item){
-    item.addEventListener('click', function(){
+// on écoute le clique sur les croix pour fermer les tags actifs
+each(croixtag, (item) => {
+   item.addEventListener('click', function(){
         item.parentNode.style.display = 'none'
         majKeyWords()
-    })
+    }) 
 })
 
 // FONCTIONNALITEES DE RECHERCHES 
@@ -188,15 +193,18 @@ function majListTagActif(){
     tagsinlist_appareils_actif = []
     tagsinlist_ingredients_actif = []
     tagsinlist_ustensiles_actif = []
-    tagsinlist_appareils_all.forEach(function(item){
+    for (let i = 0; i < tagsinlist_appareils_all.length; i++){
+        let item = tagsinlist_appareils_all[i]
         if(item.style.display == 'flex') tagsinlist_appareils_actif.push(item)
-    })
-    tagsinlist_ustensiles_all.forEach(function(item){
-        if(item.style.display == 'flex') tagsinlist_ustensiles_actif.push(item)
-    })
-    tagsinlist_ingredients_all.forEach(function(item){
+    }
+    for (let i = 0; i < tagsinlist_ingredients_all.length; i++){
+        let item = tagsinlist_ingredients_all[i]
         if(item.style.display == 'flex') tagsinlist_ingredients_actif.push(item)
-    })
+    }
+    for (let i = 0; i < tagsinlist_ustensiles_all.length; i++){
+        let item = tagsinlist_ustensiles_all[i]
+        if(item.style.display == 'flex') tagsinlist_ustensiles_actif.push(item)
+    }
 }
 
 // on écoute
@@ -255,14 +263,17 @@ let keywords = []
 // on définit une fonction qui mettra à jour ces keywords
 function majKeyWords(){
     keywords = []
-    Array.from(document.getElementsByClassName('tagactif')).forEach(function(item){
+    let tagactif = Array.from(document.getElementsByClassName('tagactif'))
+    each(tagactif, (item) => {
         if(item.style.display == 'flex'){
             keywords.push(item.textContent.toLowerCase())
         }
     })
     if(valeurinputprincipal != '' && valeurinputprincipal != undefined){
         let keywordsinput = valeurinputprincipal.split(' ')
-        keywordsinput.forEach(item => keywords.push(item.toLowerCase()))
+        each(keywordsinput, (item) => {
+            keywords.push(item.toLowerCase())
+        })
     }
     majRecettesActives()
 }
@@ -284,16 +295,16 @@ function defAllKeyWords(number){
 // par défaut la variable vaut toute les recettes puisque de base toutes les recettes sont actives 
 let nomrecettesactives = []
 let recettesactives = recipes
-recipes.forEach(item => nomrecettesactives.push(item.name.toLowerCase()))
+each(recipes, (item) => nomrecettesactives.push(item.name.toLowerCase()))
 
 function majRecettesActives(){
     nomrecettesactives = []
     recettesactives = []
-    recipes.forEach(function(item){
+    each(recipes, function(item){
         let allwords = defAllKeyWords(item.id)
         let verif = 0
         let verifbis = 0
-        keywords.forEach(function(element){
+        each(keywords, function(element){
             allwords.indexOf(element) != -1 ? verif++ : verif = verif
             verifbis++
         })
@@ -309,15 +320,15 @@ function majRecettesActives(){
 
 // Cette fonction met a jour l'affichage des recettes en fonction des noms des recettes actives
 function majRecetteAffichage(){
-    Array.from(document.getElementsByClassName('blocrecette')).forEach(function(item){
+    each(Array.from(document.getElementsByClassName('blocrecette')), function(item){
         item.style.display = 'none'
-        nomrecettesactives.forEach(function(element){
+        each(nomrecettesactives, function(element){
             if(element.toLowerCase() == item.lastChild.firstChild.firstChild.textContent.toLowerCase()){
                 item.style.display = 'block'
             }
         })
     })
-    if(Array.from(document.getElementsByClassName('blocrecette')).find(item => item.style.display == "block") == undefined){
+    if(Array.from(document.getElementsByClassName('blocrecette')).find(i => is.style.display == "block") == undefined){
         document.getElementById('norecette').style.display = 'flex'
     }
     else document.getElementById('norecette').style.display = 'none'
@@ -330,7 +341,7 @@ function tagAffiche (typeActif, item) {
 
 // Fonction qui appelle tagAffiche() en fonction du type du tag
 function tagsVerif(typeTagsAll, typeTagsActif) {
-    typeTagsAll.forEach(function(item){
+    each(typeTagsAll, function(item){
         tagAffiche(typeTagsActif, item)
     })
 }
