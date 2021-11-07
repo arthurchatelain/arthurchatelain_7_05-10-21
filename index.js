@@ -328,7 +328,7 @@ function majRecetteAffichage(){
             }
         })
     })
-    if(Array.from(document.getElementsByClassName('blocrecette')).find(i => is.style.display == "block") == undefined){
+    if(Array.from(document.getElementsByClassName('blocrecette')).find(i => i.style.display == "block") == undefined){
         document.getElementById('norecette').style.display = 'flex'
     }
     else document.getElementById('norecette').style.display = 'none'
@@ -347,16 +347,26 @@ function tagsVerif(typeTagsAll, typeTagsActif) {
 }
 
 // fonction qui transforme un tableau de tableau en un seul tableau (pour unifier des tabeleau de chaine de caracteres)
-function oneTab (item){
-    return item.join().toString().split(',')
-}
+const oneTab = (item) => item.join().toString().split(',')
 
 // On creer aussi une fonction qui met a jour les tagsinlist 
 function MajTagsInList(){
     // on creer les tableaux contenant les tags actifs
-    let ingredientsactif = oneTab(recettesactives.map(i => i.ingredients.map(i => i.ingredient.toLowerCase())))
-    let appareilsactif = recettesactives.map(i => i.appliance.toLowerCase())
-    let ustensilesactif = oneTab(recettesactives.map(i => i.ustensils.map(i => i.toLowerCase())))
+    let ingredientsactif = []
+    let appareilsactif = []
+    let ustensilesactif = []
+    each(recettesactives, (item) => {
+        each(item.ingredients, (i) => {
+            ingredientsactif.push(i.ingredient.toLowerCase())
+        })
+        appareilsactif.push(item.appliance.toLowerCase())
+        each(item.ustensils, (i) => {
+            ustensilesactif.push(i.toLowerCase())
+        })
+    })
+    ingredientsactif = supDoublons(ingredientsactif).sort()
+    appareilsactif = supDoublons(appareilsactif).sort()
+    ustensilesactif =  supDoublons(ustensilesactif).sort()
     // on met a jour visuellement les tags
     tagsVerif(tagsinlist_appareils_all, appareilsactif)
     tagsVerif(tagsinlist_ingredients_all, ingredientsactif)
